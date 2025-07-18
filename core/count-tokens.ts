@@ -92,7 +92,10 @@ async function countAnthropicTokens(text: string, model: string): Promise<number
   const client = initializeAPIClient()
   if (client) {
     try {
-      return await client.countTokens(text, model)
+      console.log(`🚀 USING ANTHROPIC API for ${model}`)
+      const result = await client.countTokens(text, model)
+      console.log(`✅ API returned ${result} tokens`)
+      return result
     } catch (error) {
       console.warn(`API token counting failed for ${model}, falling back to local:`, error)
     }
@@ -100,7 +103,10 @@ async function countAnthropicTokens(text: string, model: string): Promise<number
 
   // Fallback to local tokenizer
   try {
-    return countClaudeTokensLocal(text)
+    console.log(`⚠️ USING DEPRECATED LOCAL TOKENIZER for ${model}`)
+    const result = countClaudeTokensLocal(text)
+    console.log(`📦 Local tokenizer returned ${result} tokens`)
+    return result
   } catch (error) {
     console.error(`Local token counting failed for ${model}:`, error)
     // Ultimate fallback: character-based estimation
