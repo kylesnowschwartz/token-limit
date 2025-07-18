@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { AnthropicConfig, TokenCacheEntry } from '../types/anthropic-config';
 import { validateAnthropicConfig } from './anthropic-config';
+import { mapModelNameForAPI } from './model-name-mapper';
 
 /**
  * Anthropic API client with caching and rate limiting
@@ -52,9 +53,12 @@ export class AnthropicAPIClient {
     }
 
     try {
+      // Map internal model name to API model name
+      const apiModelName = mapModelNameForAPI(model);
+      
       // Use the Anthropic API to count tokens
       const result = await this.client.messages.countTokens({
-        model,
+        model: apiModelName,
         messages: [{ role: 'user', content: text }],
       });
 
